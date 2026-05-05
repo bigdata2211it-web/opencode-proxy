@@ -1,7 +1,7 @@
 # PROJECT_INDEX.md
 
 Last updated: 2026-05-05.
-Reason: initial GitHub publication.
+Reason: GitHub publication completed.
 
 ## What This Project Is
 
@@ -10,14 +10,15 @@ Reason: initial GitHub publication.
 ## Repository Status
 
 - Git: yes, local repository expected in this directory.
-- Repository type: GitHub publication in progress.
+- Repository type: public GitHub repository.
 - Remote repository: GitHub.
-- Remote URL: `https://github.com/bigdata2211it-web/opencode-proxy` after publish.
+- Remote URL: `https://github.com/bigdata2211it-web/opencode-proxy`.
 - Main branch: `main`.
 - Local commits: allowed when useful.
 - Push: only by explicit user request. This publication task includes an explicit push request.
 - License: no public license selected yet.
 - CI/CD: none.
+- First issue: `https://github.com/bigdata2211it-web/opencode-proxy/issues/1`.
 
 ## Read First
 
