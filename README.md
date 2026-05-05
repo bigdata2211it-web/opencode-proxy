@@ -140,6 +140,16 @@ OPENCODE_API_KEY=<your-opencode-key>
 
 Do not commit `.env`; it is ignored by git.
 
+## Updates and Contact
+
+For free AI tools, news, and project updates, subscribe to the Telegram channel:
+
+- https://t.me/gigaitools
+
+For direct questions or feedback, message:
+
+- https://t.me/xoskaz
+
 ## Notes
 
 This project is intentionally small: one Node.js entrypoint, one model mapping file, and no external runtime dependencies.
