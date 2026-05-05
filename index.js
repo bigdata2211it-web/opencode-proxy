@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-// ── OpenCode Go → Anthropic API Proxy ──
-// Claude Code (Anthropic) → OpenCode Go (OpenAI format)
+// ── OpenCode Go/Zen → Anthropic API Proxy ──
+// Claude Code (Anthropic) → OpenCode Go/Zen (OpenAI format)
 // Usage: node index.js [port]
 //
+// Subscription: set OPENCODE_TIER=go (default) or OPENCODE_TIER=zen
 // Models: edit /home/debian/opencode-proxy/models.json, then:
 //   systemctl --user restart opencode-proxy
 
 const PORT = process.argv[2] || 11434;
-const ZEN_GO = "https://opencode.ai/zen/go/v1/chat/completions";
+const TIER = (process.env.OPENCODE_TIER || "go").toLowerCase();
+const BASE_URL = TIER === "zen" ? "https://opencode.ai/zen/v1" : "https://opencode.ai/zen/go/v1";
+const CHAT_URL = BASE_URL + "/chat/completions";
+const MODELS_URL = BASE_URL + "/models";
 const API_KEY = process.env.OPENCODE_API_KEY || (() => { console.error("ERROR: Set OPENCODE_API_KEY env var"); process.exit(1); })();
 const CONFIG_PATH = __dirname + "/models.json";
 
@@ -164,7 +168,7 @@ function handleRequest(req, res) {
   // Health
   if (pathname === "/health" || pathname === "/") {
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok", upstream: ZEN_GO, port: PORT }));
+    res.end(JSON.stringify({ status: "ok", tier: TIER, base: BASE_URL, chat: CHAT_URL, port: PORT }));
     return;
   }
 
@@ -198,7 +202,7 @@ function handleRequest(req, res) {
       const openaiBody = anthropicToOpenAI(anthropicBody);
       const isStream = !!anthropicBody.stream;
 
-      fetch(ZEN_GO, {
+      fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` },
         body: JSON.stringify(openaiBody),
@@ -331,6 +335,7 @@ function handleRequest(req, res) {
 
 const server = http.createServer(handleRequest);
 server.listen(PORT, "127.0.0.1", () => {
-  console.log(`🚀 Anthropic → OpenCode Go proxy on http://127.0.0.1:${PORT}`);
+  console.log(`🚀 Anthropic → OpenCode ${TIER.toUpperCase()} proxy on http://127.0.0.1:${PORT}`);
+  console.log(`   Upstream: ${CHAT_URL}`);
   console.log(`   Available: ${MODELS.join(", ")}`);
 });

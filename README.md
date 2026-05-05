@@ -1,6 +1,6 @@
 # OpenCode Proxy
 
-OpenCode Proxy is a small local bridge that lets Anthropic-compatible clients talk to OpenCode Go.
+OpenCode Proxy is a small local bridge that lets Anthropic-compatible clients talk to **OpenCode Go** or **OpenCode Zen**.
 
 It accepts Anthropic-style requests on `POST /v1/messages`, converts them to OpenAI-style chat completion requests, sends them to OpenCode Go, and converts the response back to the Anthropic shape expected by tools such as Claude Code and Claw.
 
@@ -20,7 +20,7 @@ It accepts Anthropic-style requests on `POST /v1/messages`, converts them to Ope
 OpenCode Go uses the OpenAI chat completions format. Some coding clients expect Anthropic's messages format instead. This proxy sits between them:
 
 ```text
-Claude Code / Claw -> localhost:11434 -> OpenCode Proxy -> OpenCode Go
+Claude Code / Claw -> localhost:11434 -> OpenCode Proxy -> OpenCode Go / Zen
 ```
 
 ## How Model Mapping Works
@@ -56,6 +56,7 @@ In short:
 
 - Node.js 18 or newer.
 - An OpenCode API key in `OPENCODE_API_KEY`.
+- Subscription tier in `OPENCODE_TIER`: `go` (default) or `zen`.
 
 ## Quick Start
 
@@ -67,6 +68,8 @@ cp .env.example .env
 # Edit .env and set OPENCODE_API_KEY.
 
 export OPENCODE_API_KEY=<your-opencode-key>
+# Optional: switch from Go to Zen subscription (default: go)
+export OPENCODE_TIER=zen
 node index.js
 ```
 
@@ -132,13 +135,26 @@ mimo-v2-pro, mimo-v2-omni, mimo-v2.5, mimo-v2.5-pro
 
 ## Environment
 
-Create a local `.env` from `.env.example`, or provide the variable another way:
+Create a local `.env` from `.env.example`, or provide the variables another way:
 
 ```bash
 OPENCODE_API_KEY=<your-opencode-key>
+OPENCODE_TIER=go          # or: zen
 ```
 
 Do not commit `.env`; it is ignored by git.
+
+### Subscription Tiers
+
+| Tier | `OPENCODE_TIER` | Endpoint | Pricing |
+|------|-----------------|----------|----------|
+| **Go** | `go` (default) | `https://opencode.ai/zen/go/v1/chat/completions` | $5 first month, then $10/month (flat) |
+| **Zen** | `zen` | `https://opencode.ai/zen/v1/chat/completions` | Pay-as-you-go, no limits |
+
+Both tiers use the same API key and the same set of open models (Qwen, GLM, Kimi, MiniMax, DeepSeek, MiMo).
+Zen additionally provides Claude, GPT, Gemini, and several free models.
+
+To switch tiers, change `OPENCODE_TIER` and restart the proxy.
 
 ## Updates and Contact
 
@@ -153,3 +169,4 @@ For direct questions or feedback, message:
 ## Notes
 
 This project is intentionally small: one Node.js entrypoint, one model mapping file, and no external runtime dependencies.
+Supports both OpenCode Go (flat subscription) and OpenCode Zen (pay-as-you-go) via `OPENCODE_TIER`.
