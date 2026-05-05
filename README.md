@@ -23,6 +23,35 @@ OpenCode Go uses the OpenAI chat completions format. Some coding clients expect 
 Claude Code / Claw -> localhost:11434 -> OpenCode Proxy -> OpenCode Go
 ```
 
+## How Model Mapping Works
+
+The clients are only redirected to a local Anthropic-compatible URL. Nothing else needs to be faked.
+
+For example:
+
+- Claude Code can use `ANTHROPIC_BASE_URL=http://127.0.0.1:11434` in `settings.json`.
+- Claw can use a wrapper that exports the same `ANTHROPIC_BASE_URL` and `ANTHROPIC_API_KEY=sk-dummy`.
+
+After that, clients keep sending their normal model names:
+
+- Claude Code may send `claude-sonnet-4-20250514`.
+- Claw sends whichever Anthropic model name it selected.
+
+The proxy does the mapping by itself:
+
+```text
+claude-sonnet-4-20250514 -> models.json -> deepseek-v4-pro
+```
+
+OpenCode Go never sees the original Claude model name. It receives a normal OpenAI-format request with the mapped OpenCode Go model.
+
+In short:
+
+- Clients are told that the Anthropic API is running on localhost.
+- The proxy translates Anthropic requests into OpenAI requests.
+- The proxy maps Claude-style model names to OpenCode Go model names.
+- No other client-side patching is needed.
+
 ## Requirements
 
 - Node.js 18 or newer.
