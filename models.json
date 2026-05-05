@@ -1,0 +1,5 @@
+{
+  "opus":   "qwen3.6-plus",
+  "sonnet": "deepseek-v4-pro",
+  "haiku":  "mimo-v2.5-pro"
+}
